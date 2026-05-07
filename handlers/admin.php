@@ -24,6 +24,59 @@ function adminPanel($pdo)
     require '../views/admin.php';
 }
 
+function makeAdmin($pdo)
+{
+    if ($_SESSION['user']['role'] !== 'admin') {
+        echo "Доступ запрещён";
+        return;
+    }
+
+    $id = $_GET['id'] ?? null;
+
+    if (!$id) {
+        echo "ID не указан";
+        return;
+    }
+
+    $stmt = $pdo->prepare("
+        UPDATE users
+        SET role = 'admin'
+        WHERE id = ?
+    ");
+
+    $stmt->execute([$id]);
+
+    echo "<script>
+        window.location.href='index.php?route=admin';
+    </script>";
+}
+
+function makeUser($pdo)
+{
+    if ($_SESSION['user']['role'] !== 'admin') {
+        echo "Доступ запрещён";
+        return;
+    }
+
+    $id = $_GET['id'] ?? null;
+
+    if (!$id) {
+        echo "ID не указан";
+        return;
+    }
+
+    $stmt = $pdo->prepare("
+        UPDATE users
+        SET role = 'user'
+        WHERE id = ?
+    ");
+
+    $stmt->execute([$id]);
+
+    echo "<script>
+        window.location.href='index.php?route=admin';
+    </script>";
+}
 
 // ==========================
 // УДАЛЕНИЕ ПОЛЬЗОВАТЕЛЯ
@@ -72,39 +125,4 @@ function deletePost($pdo)
 
     header("Location: index.php?route=admin");
     exit;
-}
-
-
-// ==========================
-// СОЗДАНИЕ АДМИНА (ДОП. ФУНКЦИЯ)
-// ==========================
-function createAdmin($pdo)
-{
-    if ($_SESSION['user']['role'] !== 'admin') {
-        echo "Нет доступа";
-        return;
-    }
-
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-        $username = trim($_POST['username']);
-        $email = trim($_POST['email']);
-        $password = $_POST['password'];
-
-        if (!$username || !$email || !$password) {
-            echo "Заполните все поля";
-            return;
-        }
-
-        $hash = password_hash($password, PASSWORD_BCRYPT);
-
-        $stmt = $pdo->prepare("
-            INSERT INTO users (username, email, password_hash, role)
-            VALUES (?, ?, ?, 'admin')
-        ");
-
-        $stmt->execute([$username, $email, $hash]);
-
-        echo "Админ создан";
-    }
 }

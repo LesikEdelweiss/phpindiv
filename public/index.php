@@ -61,6 +61,12 @@ switch ($route) {
         addComment($pdo);
         break;
 
+    case 'search':
+        require '../views/header.php';
+    	searchPosts($pdo);
+    	require '../views/footer.php';
+    break;
+
     // Админка
     case 'admin':
         require '../views/header.php';
@@ -79,8 +85,12 @@ switch ($route) {
         deletePost($pdo);
         break;
 
-    case 'create_admin':
-        createAdmin($pdo);
+    case 'make_admin':
+        makeAdmin($pdo);
+        break;
+
+    case 'make_user':
+        makeUser($pdo);
         break;
 
     default:

@@ -3,10 +3,31 @@
 <h4>Пользователи</h4>
 
 <?php foreach ($users as $u): ?>
+
     <p>
-        <?= $u['username'] ?> (<?= $u['role'] ?>)
-        <a href="index.php?route=delete_user&id=<?= $u['id'] ?>">Удалить</a>
+        <?= htmlspecialchars($u['username']) ?>
+        (<?= $u['role'] ?>)
+
+        <a href="index.php?route=delete_user&id=<?= $u['id'] ?>">
+            Удалить
+        </a>
+
+        <?php if ($u['role'] === 'user'): ?>
+
+            <a href="index.php?route=make_admin&id=<?= $u['id'] ?>">
+                Сделать админом
+            </a>
+
+        <?php else: ?>
+
+            <a href="index.php?route=make_user&id=<?= $u['id'] ?>">
+                Сделать пользователем
+            </a>
+
+        <?php endif; ?>
+
     </p>
+
 <?php endforeach; ?>
 
 <hr>

@@ -79,10 +79,28 @@ function createPost($pdo)
 
         $title = trim($_POST['title']);
         $content = trim($_POST['content']);
+        $category = $_POST['category'] ?? '';
+        $isPublic = isset($_POST['is_public']) ? 1 : 0;
+        $accessLevel = $_POST['access_level'] ?? '';
 
-        if (!$title || !$content) {
-            echo "Заполните все поля";
-            return;
+        if (strlen($title) < 3) {
+           echo "Слишком короткий заголовок";
+	   return;
+        }
+
+        if (strlen($content) < 10) {
+           echo "Контент слишком короткий";
+	   return;
+        }
+
+        if (!$category) {
+           echo "Выберите категорию";
+           return;
+        }
+
+        if (!$accessLevel) {
+           echo "Выберите уровень доступа";
+           return;
         }
 
         $stmt = $pdo->prepare("
